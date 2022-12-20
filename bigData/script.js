@@ -8,19 +8,21 @@ const sortCountries = () => {
   randomPersonData.sort((a, b) => a.region.localeCompare(b.region));
 };
 
+const countryButton = document.querySelector("#countryList");
+
 const addCountriesToDom = () => {
   const countryList = getCountryList();
   countryList.forEach((country) => {
     const countryUl = document.createElement("ul");
     const newLi = document.createElement("li");
     newLi.innerHTML = country;
+    countryButton.appendChild(countryUl)
     countryUl.appendChild(newLi);
     sortCountries();
   });
 };
 
 const countryListClick = () => {
-  const countryButton = document.querySelector("#countryList");
   countryButton.addEventListener("click", addCountriesToDom);
 };
 
