@@ -1,3 +1,16 @@
+const ARIES = "Aries";
+const TAURUS = "Taurus";
+const GEMINI = "Gemini";
+const CANCER = "Cancer";
+const LEO = "Leo";
+const VIRGO = "Virgo";
+const LIBRA = "Libra";
+const SCORPIO = "Scorpio";
+const SAGGITARIUS = "Saggitarius";
+const CAPRICORN = "Capricorn";
+const AQUARIUS = "Aquarius";
+const PISCES = "Pisces";
+
 // sterrebeeld van de mensen bepalen
 const starSign = (month, day) => {
   if (month === 1 && day <= 20) return CAPRICORN;
@@ -26,26 +39,35 @@ const starSign = (month, day) => {
   if (month === 12 && day >= 22) return CAPRICORN;
 };
 
+// om een sterrebeeld te bepalen heb een dag en een maand nodig, dus die variabele moet ik maken uit dmy
+// dat doe ik door ("/") te gebruiken en dan de plaats aan te geven van de var die ik nodig heb
+// vervolgens voeg ik met rp.sign een kenmerk toe aan het object, omdat ik daar later op wil filteren
+// rp.sign wordt bepaald door de maand en de dag in de starSign functie te gooien en die bepaalt 
+// vervolgens welk sterrebeeld het is. Daarna de persoon met alle kenmerken returnen!!! Anders komt er niks uit
 const getStarSign = (rp) => {
   const month = parseInt(rp.birthday.dmy.split("/")[1]);
   const day = parseInt(rp.birthday.dmy.split("/")[0]);
   rp.sign = starSign(month, day);
+  return rp
 };
 
 
-// alle vrouwelijke capricorns boven 30 verzamelen
+// alle vrouwelijke capricorns boven 30 verzamelen en daarna zorgen dat het kenmerk sterrebeeld wordt
+// toegevoegd met de getStarSign functie (die vervolgens weer starSign aanroept). 
+// zodra deze allemaal door map persoon voor persoon gedaan zijn kan ik er weer op filteren.
 const getCapricornWomenAbove30 = () => {
-  const allWomenAbove30 = randomPersonData
+  const allCapriWomenAbove30 = randomPersonData
     .filter((rp) => {
       return rp.gender === "female";
     })
     .filter((rp) => {
       return rp.age > 30;
     })
-    .map(getStarSign)
+    .map(rp => getStarSign(rp))
     .filter((rp) => {
       return rp.sign === CAPRICORN;
     });
+    return allCapriWomenAbove30
 };
 
 console.log(getCapricornWomenAbove30());
@@ -54,16 +76,17 @@ console.log(getCapricornWomenAbove30());
 // toevoegen aan de dom inc voor achter naam en foto
 const addCapricornsToDom = () => {
   const capriList = getCapricornWomenAbove30();
-  capriList.sort()
   capriList.forEach((capri) => {
     const newLi = document.createElement("li");
-    const fnSpan = document.createElement("SPAN").innerText = randomPersonData.name;
-    const snSpan = document.createElement("SPAN").innerText = randomPersonData.surname;
+    const fnSpan = document.createElement("SPAN")
+    fnSpan.innerText = capri.name;
+    const snSpan = document.createElement("SPAN")
+    snSpan.innerText = capri.surname;
     const photoSpan = document.createElement("img")
-    photoSpan.src = randomPersonData.photo
-    newli.appendChild(fnSpan)
-    newli.appendChild(snSpan)
-    newli.appendChild(photoSpan)
+    photoSpan.src = capri.photo
+    newLi.appendChild(fnSpan)
+    newLi.appendChild(snSpan)
+    newLi.appendChild(photoSpan)
     results.appendChild(newLi);
     
   });
@@ -72,7 +95,7 @@ const addCapricornsToDom = () => {
 
 // event voor de button
 const capricornListClick = () => {
-  countryButton.addEventListener("click", emptyList);
+  capricornButton.addEventListener("click", emptyList);
   capricornButton.addEventListener("click", addCapricornsToDom);
 };
 
